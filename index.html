@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>iLotte.com</title>
+        <style>
+            .header{
+                font-size: 100px;
+                color: blueviolet;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div id="app"></div>
+
+
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+        <script type="text/babel">
+            const App = function(){
+                const date = new Date();
+                const year = date.getFullYear();
+
+                return <h1 className="header">This Year: {year}</h1>;
+            }
+            ReactDOM.render(<App />,document.getElementById("app"));
+        </script>
+    </body>
+</html>
