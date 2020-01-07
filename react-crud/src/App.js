@@ -7,6 +7,7 @@ class App extends React.Component{
     super();
 
     this.state = {
+      editing: false,
       newTodo:'',
       todos: [
         { id:1, name:"Karate"},
@@ -18,6 +19,7 @@ class App extends React.Component{
     this.handleChange = this.handleChange.bind(this);
     this.addTodo = this.addTodo.bind(this);
     this.deleteTodos = this.deleteTodos.bind(this);
+    this.updateTodo = this.updateTodo.bind(this);
 
   }
 
@@ -46,6 +48,14 @@ class App extends React.Component{
     let todos = this.state.todos;
     delete todos[index];
     this.setState({todos})
+  }
+
+  updateTodo(index){
+    let todos = this.state.todos[index];
+    this.setState({
+      newTodo: todos.name,
+      editing:true
+    })
   }
 
 
@@ -79,15 +89,18 @@ class App extends React.Component{
           <button
             onClick={this.addTodo}
             className="mb-4 btn btn-info">
-            Add To Do
+            {this.state.editing == true ? 'Update to do' : 'Add to do'}
           </button>
           <ul className="list-group">
             {this.state.todos.map((item,index)=>{
               return <li key={item.id}  className="list-group-item">
                   {item.name} 
                   <button
-                    onClick={()=>this.deleteTodos(index)} 
-                    className="btn btn-danger btn-sm ml-4">X</button>
+                    onClick={()=>{this.updateTodo(index);}} 
+                    className="btn btn-danger btn-sm ml-2">U</button>
+                  <button
+                    onClick={()=>{this.deleteTodos(index);}} 
+                    className="btn btn-danger btn-sm ml-2">X</button>
               </li>;
             })}
           </ul>
