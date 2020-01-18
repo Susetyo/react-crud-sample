@@ -8,6 +8,7 @@ class App extends React.Component{
 
     this.state = {
       editing: false,
+      editingIndex: null,
       newTodo:'',
       todos: [
         { id:1, name:"Karate"},
@@ -19,6 +20,7 @@ class App extends React.Component{
     this.handleChange = this.handleChange.bind(this);
     this.addTodo = this.addTodo.bind(this);
     this.deleteTodos = this.deleteTodos.bind(this);
+    this.editTodo = this.editTodo.bind(this);
     this.updateTodo = this.updateTodo.bind(this);
 
   }
@@ -33,7 +35,7 @@ class App extends React.Component{
     const todos = this.state.todos;
     const newTodo = {
       name: this.state.newTodo,
-      id: this.state.todos[this.state.todos.length-1].id+1
+      id: this.state.todos[this.state.todos.length-1] ? this.state.todos[this.state.todos.length-1].id+1 : 1
     }
 
     todos.push(newTodo);
@@ -42,6 +44,8 @@ class App extends React.Component{
       todos: todos,
       newTodo:''
     })
+
+    console.log(this.state.todos.length)
   }
 
   deleteTodos(index){
@@ -50,12 +54,31 @@ class App extends React.Component{
     this.setState({todos})
   }
 
-  updateTodo(index){
+  editTodo(index){
     let todos = this.state.todos[index];
     this.setState({
       newTodo: todos.name,
-      editing:true
+      editing:true,
+      editingIndex: index
     })
+  }
+
+  updateTodo(){
+
+    let todo = this.state.todos[this.state.editingIndex];
+    
+    todo.name = this.state.newTodo;
+
+    const todos = this.state.todos;
+
+    todos[this.state.editingIndex] = todo;
+
+    this.setState({
+      todos: todos,
+      editingIndex:null,
+      editing:false,
+      newTodo:''
+    });
   }
 
 
@@ -65,16 +88,8 @@ class App extends React.Component{
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+            LEARN CURD REACT
           </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
         </header>
         <div className="container">
           <h2 className="text-center p-4">Todos App</h2>
@@ -87,23 +102,26 @@ class App extends React.Component{
             value={this.state.newTodo}  
           />
           <button
-            onClick={this.addTodo}
+            onClick={this.state.editing == true ? this.updateTodo : this.addTodo }
             className="mb-4 btn btn-info">
-            {this.state.editing == true ? 'Update to do' : 'Add to do'}
+            {this.state.editing == true ? 'Update todo' : 'Add todo'}
           </button>
-          <ul className="list-group">
-            {this.state.todos.map((item,index)=>{
-              return <li key={item.id}  className="list-group-item">
-                  {item.name} 
-                  <button
-                    onClick={()=>{this.updateTodo(index);}} 
-                    className="btn btn-danger btn-sm ml-2">U</button>
-                  <button
-                    onClick={()=>{this.deleteTodos(index);}} 
-                    className="btn btn-danger btn-sm ml-2">X</button>
-              </li>;
-            })}
-          </ul>
+          {
+            !this.state.editing && 
+            <ul className="list-group">
+              {this.state.todos.map((item,index)=>{
+                return <li key={item.id}  className="list-group-item">
+                    {item.name} 
+                    <button
+                      onClick={()=>{this.editTodo(index);}} 
+                      className="btn btn-danger btn-sm ml-2">U</button>
+                    <button
+                      onClick={()=>{this.deleteTodos(index);}} 
+                      className="btn btn-danger btn-sm ml-2">X</button>
+                </li>;
+              })}
+            </ul>
+          }
         </div>
       </div>
     );
