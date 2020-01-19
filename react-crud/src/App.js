@@ -10,6 +10,7 @@ class App extends React.Component{
     this.state = {
       editing: false,
       editingIndex: null,
+      notification: null,
       newTodo:'',
       todos: [
         { id:1, name:"Karate"},
@@ -18,6 +19,7 @@ class App extends React.Component{
       ]
     }
 
+    this.alert = this.alert.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.addTodo = this.addTodo.bind(this);
     this.deleteTodos = this.deleteTodos.bind(this);
@@ -46,13 +48,14 @@ class App extends React.Component{
       newTodo:''
     })
 
-    console.log(this.state.todos.length)
+    this.alert("Add is successful");
   }
 
   deleteTodos(index){
     let todos = this.state.todos;
     delete todos[index];
     this.setState({todos})
+    this.alert("Deleted is successful");
   }
 
   editTodo(index){
@@ -80,6 +83,20 @@ class App extends React.Component{
       editing:false,
       newTodo:''
     });
+
+    this.alert("Updated is successful");
+  }
+
+  alert(notification){
+
+    this.setState({
+      notification: notification
+    })
+
+    setTimeout(()=>{
+      this.setState({notification:null})
+    },2000);
+
   }
 
 
@@ -94,6 +111,15 @@ class App extends React.Component{
         </header>
         <div className="container">
           <h2 className="text-center p-4">Todos App</h2>
+
+          {
+            this.state.notification &&
+            <div className="alert alert-success">
+              {this.state.notification}
+            </div>
+          }
+          
+
           <input 
             name="todo"
             type="text"
