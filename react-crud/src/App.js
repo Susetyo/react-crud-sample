@@ -130,7 +130,9 @@ class App extends React.Component{
           />
           <button
             onClick={this.state.editing == true ? this.updateTodo : this.addTodo }
+            disabled={this.state.newTodo.length < 5}
             className="mb-4 btn btn-info">
+            
             {this.state.editing == true ? 'Update todo' : 'Add todo'}
           </button>
           {
