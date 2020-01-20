@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import ListItem from './ListItem';
 import Axios from 'axios';
+import Loading from './source.gif';
 
 class App extends React.Component{
   constructor(){
@@ -12,6 +13,7 @@ class App extends React.Component{
       editing: false,
       editingIndex: null,
       notification: null,
+      loading: true,
       newTodo:'',
       todos: [
         { id:1, name:"Karate"},
@@ -108,9 +110,14 @@ class App extends React.Component{
 
   async componentDidMount(){
     const response = await Axios.get(`${this.apiUrl}/todos`);
-    this.setState({
-      todos: response.data
-    });
+    
+    setTimeout(()=>{
+      this.setState({
+        todos: response.data,
+        loading: false
+      });  
+    },1000)
+    
   }
 
 
@@ -149,7 +156,13 @@ class App extends React.Component{
             {this.state.editing == true ? 'Update todo' : 'Add todo'}
           </button>
           {
-            !this.state.editing && 
+            this.state.loading &&
+            <div className="col-12 mb-4">
+              <img style={{width:'100%'}} src={Loading} alt="laoding" />
+            </div>
+          }
+          {
+            (!this.state.editing || !this.state.loading) && 
             <ul className="list-group">
               {this.state.todos.map((item,index)=>{
                 return <ListItem key={index} item={item} editTodo={()=>this.editTodo(index)} deleteTodos={()=>this.deleteTodos(index)} />
