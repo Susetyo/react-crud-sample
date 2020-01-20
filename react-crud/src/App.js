@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import ListItem from './ListItem';
+import Axios from 'axios';
 
 class App extends React.Component{
   constructor(){
@@ -19,6 +20,8 @@ class App extends React.Component{
       ]
     }
 
+    this.apiUrl = "https://5e245f9bc5fc8f001465d09b.mockapi.io";
+
     this.alert = this.alert.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.addTodo = this.addTodo.bind(this);
@@ -34,14 +37,14 @@ class App extends React.Component{
     })
   }
 
-  addTodo(){
+  async addTodo(){
     const todos = this.state.todos;
-    const newTodo = {
-      name: this.state.newTodo,
-      id: this.state.todos[this.state.todos.length-1] ? this.state.todos[this.state.todos.length-1].id+1 : 1
-    }
 
-    todos.push(newTodo);
+    const response = await Axios.post(`${this.apiUrl}/todos`,{
+      name: this.state.newTodo
+    })
+
+    todos.push(response.data);
 
     this.setState({
       todos: todos,
@@ -51,8 +54,10 @@ class App extends React.Component{
     this.alert("Add is successful");
   }
 
-  deleteTodos(index){
+  async deleteTodos(index){
     let todos = this.state.todos;
+    let todo = todos[index];
+    await Axios.delete(`${this.apiUrl}/todos/${todo.id}`);
     delete todos[index];
     this.setState({todos})
     this.alert("Deleted is successful");
@@ -67,15 +72,17 @@ class App extends React.Component{
     })
   }
 
-  updateTodo(){
+  async updateTodo(){
 
     let todo = this.state.todos[this.state.editingIndex];
     
-    todo.name = this.state.newTodo;
+    const response = await Axios.put(`${this.apiUrl}/todos/${todo.id}`,{
+      name: this.state.newTodo
+    })
 
     const todos = this.state.todos;
 
-    todos[this.state.editingIndex] = todo;
+    todos[this.state.editingIndex] = response.data;
 
     this.setState({
       todos: todos,
@@ -99,6 +106,13 @@ class App extends React.Component{
 
   }
 
+  async componentDidMount(){
+    const response = await Axios.get(`${this.apiUrl}/todos`);
+    this.setState({
+      todos: response.data
+    });
+  }
+
 
   render(){
     return (
@@ -118,7 +132,6 @@ class App extends React.Component{
               {this.state.notification}
             </div>
           }
-          
 
           <input 
             name="todo"
